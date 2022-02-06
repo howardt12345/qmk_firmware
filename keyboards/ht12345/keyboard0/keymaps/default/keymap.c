@@ -17,6 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // clang-format off
 	[0] = LAYOUT(
@@ -44,15 +48,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 bool encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) { /* First encoder, ROT1 */
         if (clockwise) {
-            rgb_matrix_decrease_val();
-        } else {
             rgb_matrix_increase_val();
+        } else {
+            rgb_matrix_decrease_val();
         }
     } else if (index == 1) { /* Second encoder, ROT2 */
         if (clockwise) {
-            tap_code(KC_VOLD);
-        } else {
             tap_code(KC_VOLU);
+        } else {
+            tap_code(KC_VOLD);
         }
     }
     return true;
