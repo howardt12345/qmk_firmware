@@ -17,10 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
-// Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // clang-format off
 	[0] = LAYOUT(

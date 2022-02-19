@@ -16,52 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-
-void dance_rgb(qk_tap_dance_state_t *state, void *user_data) {
-    switch (state->count) {
-        case 1:
-            rgb_matrix_toggle();
-            break;
-        case 2:
-            rgb_matrix_step();
-            break;
-        case 3:
-            rgb_matrix_step_reverse();
-            break;
-        default:
-            reset_tap_dance(state);
-            break;
-    }
-}
-
-void dance_media(qk_tap_dance_state_t *state, void *user_data) {
-    switch (state->count) {
-        case 1:
-            tap_code16(KC_MPLY);
-            break;
-        case 2:
-            tap_code16(KC_MNXT);
-            break;
-        case 3:
-            tap_code16(KC_MPRV);
-            break;
-        default:
-            reset_tap_dance(state);
-            break;
-    }
-}
-
-// Tap Dance declarations
-enum {
-    TD_RGB,
-    TD_MDA,
-};
-
-// Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_RGB] = ACTION_TAP_DANCE_FN(dance_rgb),
-    [TD_MDA] = ACTION_TAP_DANCE_FN(dance_media),
-};
+#include "tap_dance.c"
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // clang-format off

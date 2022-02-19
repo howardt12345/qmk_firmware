@@ -65,9 +65,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ENCODER_DIRECTION_FLIP
 #define ENCODER_RESOLUTION 4
 
-/* Tap dance configurator */
-#define TAPPING_TERM 250
-
 // This is a 7-bit address, that gets left-shifted and bit 0
 // set to 0 for write, 1 for read (as per I2C protocol)
 // The address will vary depending on your wiring:

@@ -15,7 +15,6 @@ COMMAND_ENABLE = yes       	# Commands for debug and configuration
 NKRO_ENABLE = yes	        # Nkey Rollover - if this doesn't work, see here: https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work
 UNICODE_ENABLE = no         # Unicode
 WPM_ENABLE = yes			# Enable words per minute
-TAP_DANCE_ENABLE = yes 		# Tap dance
 
 BACKLIGHT_ENABLE = no       # Enable keyboard backlight functionality
 RGBLIGHT_ENABLE = no        # Enable WS2812 RGB underlight.
