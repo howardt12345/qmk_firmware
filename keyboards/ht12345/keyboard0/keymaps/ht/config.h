@@ -18,7 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef CONFIG_USER_H
 #define CONFIG_USER_H
 
-/* Tap dance configurator */
+/* Tap dance config */
 #define TAPPING_TERM 250
+
+/* Mouse keys config */
+#define MK_3_SPEED
 
 #endif
