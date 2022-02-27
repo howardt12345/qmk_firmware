@@ -2,7 +2,7 @@
 
 #ifdef RGB_MATRIX_ENABLE
 // clang-format off
-led_config_t g_led_confg = {{
+led_config_t g_led_config = {{
     // Key Matrix to LED Index
     { 0,  1,  2,  NO_LED },
     { 4,  5,  6,  3 },
