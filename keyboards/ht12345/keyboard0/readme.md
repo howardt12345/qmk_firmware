@@ -6,9 +6,10 @@ A tenkeyless keyboard with 5 additional macro keys, RGB lighting, 2 rotary encod
 * Hardware Supported: keyboard0 p2
 * Hardware Availability: limited prototype quantities
 
-There is currently one version of the keyboard0, with plans for future versions. Please use the appropriate firmware for your keyboard. **Pay close attention to the specific MCU and RGB controller.**
+There is currently one version of the keyboard0 (+revisions), with plans for future versions. Please use the appropriate firmware for your keyboard. **Pay close attention to the specific MCU and RGB controller.** 
 
-* p2: MCU: **STM32F303CBT6**, RGB: 3x **IS31FL3731**
+* p2: MCU: **STM32F303CB**, RGB: 3x **IS31FL3731**
+    * p2.1: MCU: **STM32F303CC**, RGB: 3x **IS31FL3731**
 
 Make example for this keyboard (after setting up your build environment):
 
