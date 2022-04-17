@@ -24,4 +24,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Mouse keys config */
 #define MK_3_SPEED
 
+/* RGBLIGHT config */
+#define RGB_DI_PIN A9
+#define RGBLED_NUM 30
+#define RGBLIGHT_ANIMATIONS
+#define RGBLIGHT_DEFAULT_VAL 64
+#define RGBLIGHT_DEFAULT_SPD 32
+#define RGBLIGHT_DEFAULT_MODE RGBLIGHT_MODE_RAINBOW_MOOD
+
+/* RGB Matrix config */
+#define RGB_MATRIX_STARTUP_SPD 16
+#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_ALL // Sets the default mode, if none has been set
+
+
 #endif

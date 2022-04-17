@@ -20,6 +20,7 @@ void dance_rgb(qk_tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
         case 1:
             rgb_matrix_toggle();
+            rgblight_toggle();
             break;
         case 2:
             rgb_matrix_step();
