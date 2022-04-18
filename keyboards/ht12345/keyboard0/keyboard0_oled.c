@@ -41,7 +41,7 @@ uint8_t bkl_hsv_v;
 
 #    ifdef ENCODER_ENABLE
 uint8_t encoder_index;
-bool encoder_clockwise;
+bool    encoder_clockwise;
 #    endif
 
 void get_rgb_matrix_change(void) {
@@ -80,13 +80,13 @@ void get_rgb_matrix_change(void) {
 #    endif
 }
 
-#ifdef ENCODER_ENABLE
+#    ifdef ENCODER_ENABLE
 bool encoder_update_kb(uint8_t index, bool clockwise) {
-    encoder_index = index;
+    encoder_index     = index;
     encoder_clockwise = clockwise;
     return encoder_update_user(index, clockwise);
 }
-#endif
+#    endif
 
 bool oled_task_kb(void) {
     // Host Keyboard Layer Status
@@ -102,14 +102,16 @@ bool oled_task_kb(void) {
 
     oled_write_P(PSTR("\n"), false);
 
-    #if defined RGB_MATRIX_ENABLE || defined RGBLIGHT_ENABLE
+#    if defined RGB_MATRIX_ENABLE || defined RGBLIGHT_ENABLE
     get_rgb_matrix_change();
     oled_write(rgb_str, false);
-    #endif
+#    endif
 
+#    ifdef WPM_ENABLE
     oled_write_P(PSTR("\n"), false);
     sprintf(wpm_str, "WPM: %03d", get_current_wpm());
     oled_write(wpm_str, false);
+#    endif
 
     // write encoder info
 #    ifdef ENCODER_ENABLE
