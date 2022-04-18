@@ -19,11 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "oled_functions.c"
 
 #ifdef OLED_ENABLE
+// Animation variables
 #    define ANIM_FRAME_DURATION 1000 / 10 // how long each frame lasts in ms
 uint32_t anim_timer = 0;
 
 /* Placement information for display elements */
-#    define NUMLOCK_DISPLAY_X 2
+#    define NUMLOCK_DISPLAY_X 0
 #    define NUMLOCK_DISPLAY_Y 19
 
 #    define CAPSLOCK_DISPLAY_X 27
@@ -32,17 +33,24 @@ uint32_t anim_timer = 0;
 #    define SCROLLLOCK_DISPLAY_X 52
 #    define SCROLLLOCK_DISPLAY_Y 19
 
-#    define LAYER_DISPLAY_X 2
+#    define LAYER_DISPLAY_X 0
 #    define LAYER_DISPLAY_Y 0
 
-// WPM and RGB settings strings
+// WPM variables
 #    ifdef WPM_ENABLE
 char wpm_str[10];
-#    endif
-#    if defined RGB_MATRIX_ENABLE || defined RGBLIGHT_ENABLE
-char rgb_str[10];
+#        define WPM_DISPLAY_X 80
+#        define WPM_DISPLAY_Y 21
 #    endif
 
+// RGB info variables
+#    if defined RGB_MATRIX_ENABLE || defined RGBLIGHT_ENABLE
+char rgb_str[10];
+#        define RGB_INFO_DISPLAY_X 62
+#        define RGB_INFO_DISPLAY_Y 2
+#    endif
+
+// RGB light specific variables
 #    ifdef RGBLIGHT_ENABLE
 // Following line allows macro to read current RGB lighting settings
 extern rgblight_config_t rgblight_config;
@@ -53,6 +61,7 @@ uint8_t bkl_hsv_s;
 uint8_t bkl_hsv_v;
 #    endif
 
+// RGB Matrix specific variables
 #    ifdef RGB_MATRIX_ENABLE
 uint8_t matrix_mode;
 uint8_t matrix_hsv_h;
@@ -60,9 +69,23 @@ uint8_t matrix_hsv_s;
 uint8_t matrix_hsv_v;
 #    endif
 
+// Encoder information
 #    ifdef ENCODER_ENABLE
-uint8_t encoder_index;
-bool    encoder_clockwise;
+// encoder slider placement information
+#        define ENCODER_DISPLAY_X 110
+#        define ENCODER_DISPLAY_Y 0
+#        define ENCODER_SLIDER_WIDTH 6
+#        define ENCODER_SLIDER_SPACING 3
+
+// encoder slider reset delay
+#        define ENCODER_RESET_DELAY 25
+uint32_t encoder_timer = 0;
+
+// encoder update variables
+
+#        define NUMBER_OF_ENCODERS 2
+bool    encoder_updating;
+uint8_t encoder_slider_pos[NUMBER_OF_ENCODERS];
 #    endif
 
 void get_rgb_matrix_change(void) {
@@ -103,8 +126,12 @@ void get_rgb_matrix_change(void) {
 
 #    ifdef ENCODER_ENABLE
 bool encoder_update_kb(uint8_t index, bool clockwise) {
-    encoder_index     = index;
-    encoder_clockwise = clockwise;
+    encoder_updating = true;
+    for (int i = 0; i < NUMBER_OF_ENCODERS; i++) {
+        if (i == index) {
+            encoder_slider_pos[i] = clockwise ? -1 : 1;
+        }
+    }
     return encoder_update_user(index, clockwise);
 }
 #    endif
@@ -139,12 +166,74 @@ void draw_keyboard_locks(void) {
     draw_text_rectangle(SCROLLLOCK_DISPLAY_X, SCROLLLOCK_DISPLAY_Y, 5 + (3 * 6), "SCR", led_state.scroll_lock);
 }
 
+// draws the last changed RGB setting
+#    if defined(RGBLIGHT_ENABLE) || defined(RGB_MATRIX_ENABLE)
+void draw_rgb_matrix_change(void) {
+    get_rgb_matrix_change();
+    if (rgblight_is_enabled() || rgb_matrix_config.enable) {
+        write_chars_at_pixel_xy(RGB_INFO_DISPLAY_X, RGB_INFO_DISPLAY_Y, rgb_str, false);
+    } else {
+        write_chars_at_pixel_xy(RGB_INFO_DISPLAY_X, RGB_INFO_DISPLAY_Y, " RGB:OFF", false);
+    }
+}
+#    endif
+
+// draws WPM info
+#    ifdef WPM_ENABLE
+void draw_wpm(void) {
+    sprintf(wpm_str, "W:%03d", get_current_wpm());
+    write_chars_at_pixel_xy(WPM_DISPLAY_X, WPM_DISPLAY_Y, wpm_str, false);
+}
+#    endif
+
+// draws encoder sliders to indicate if encoder is being used
+#    ifdef ENCODER_ENABLE
+// Encoder slider component
+void draw_encoder_slider(uint8_t enc_index) {
+    uint8_t enc_x          = ENCODER_DISPLAY_X + (enc_index * ENCODER_SLIDER_WIDTH) + ((enc_index + 1) * ENCODER_SLIDER_SPACING);
+    uint8_t encoder_height = OLED_DISPLAY_HEIGHT - (2 * ENCODER_DISPLAY_Y);
+    draw_rect_soft(enc_x, ENCODER_DISPLAY_Y, ENCODER_SLIDER_WIDTH, encoder_height, true);
+    if (encoder_updating) {
+        uint8_t enc_offset = encoder_height * (encoder_slider_pos[enc_index] + 2) / 4;
+        draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + enc_offset, ENCODER_SLIDER_WIDTH, encoder_height - enc_offset, true);
+    } else {
+        // default encoder state
+        draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + (encoder_height / 2), ENCODER_SLIDER_WIDTH, encoder_height / 2, true);
+    }
+}
+
+void draw_encoder_sliders(void) {
+    draw_encoder_slider(0);
+    draw_encoder_slider(1);
+}
+
+void reset_encoders(void) {
+    encoder_updating = false;
+    for (int i = 0; i < NUMBER_OF_ENCODERS; i++) {
+        encoder_slider_pos[i] = 0;
+    }
+}
+#    endif
+
 bool oled_task_kb(void) {
     if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
         anim_timer = timer_read32();
         oled_clear();
-        draw_keyboard_locks();
         draw_keyboard_layers();
+        draw_keyboard_locks();
+#    if defined(RGBLIGHT_ENABLE) || defined(RGB_MATRIX_ENABLE)
+        draw_rgb_matrix_change();
+#    endif
+#    ifdef WPM_ENABLE
+        draw_wpm();
+#    endif
+#    ifdef ENCODER_ENABLE
+        draw_encoder_sliders();
+        if (timer_elapsed32(encoder_timer) > ANIM_FRAME_DURATION * ENCODER_RESET_DELAY) {
+            encoder_timer = timer_read32();
+            reset_encoders();
+        }
+#    endif
     }
 
     return false;
