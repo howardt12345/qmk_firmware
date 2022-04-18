@@ -34,4 +34,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	{ K400,  K401,  K402,  K403,  K404,  K405,  K406,  K407,  K408,  K409,  K410,  K411,  KC_NO, KC_NO, K414,  KC_NO, K416,  K417 }, \
 	{ K500,  K501,  K502,  K503,  KC_NO, KC_NO, K506,  KC_NO, KC_NO, KC_NO, K510,  K511,  KC_NO, K513,  K514,  K515,  K516,  K517 }  \
 }
-
