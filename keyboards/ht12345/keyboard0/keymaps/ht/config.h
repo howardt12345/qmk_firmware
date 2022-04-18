@@ -31,6 +31,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLIGHT_DEFAULT_VAL 64
 #define RGBLIGHT_DEFAULT_SPD 32
 #define RGBLIGHT_DEFAULT_MODE RGBLIGHT_MODE_RAINBOW_MOOD
+#define RGBLIGHT_HUE_STEP 8
+#define RGBLIGHT_SAT_STEP 16
+#define RGBLIGHT_VAL_STEP 16
 
 /* RGB Matrix config */
 #define RGB_MATRIX_STARTUP_SPD 16
