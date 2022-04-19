@@ -25,29 +25,29 @@ uint32_t anim_timer = 0;
 
 /* Placement information for display elements */
 #    define NUMLOCK_DISPLAY_X 0
-#    define NUMLOCK_DISPLAY_Y 19
+#    define NUMLOCK_DISPLAY_Y 0
 
 #    define CAPSLOCK_DISPLAY_X 26
-#    define CAPSLOCK_DISPLAY_Y 19
+#    define CAPSLOCK_DISPLAY_Y 0
 
 #    define SCROLLLOCK_DISPLAY_X 52
-#    define SCROLLLOCK_DISPLAY_Y 19
+#    define SCROLLLOCK_DISPLAY_Y 0
 
 #    define LAYER_DISPLAY_X 0
-#    define LAYER_DISPLAY_Y 0
+#    define LAYER_DISPLAY_Y 19
 
 // WPM variables
 #    ifdef WPM_ENABLE
 char wpm_str[10];
 #        define WPM_DISPLAY_X 80
-#        define WPM_DISPLAY_Y 21
+#        define WPM_DISPLAY_Y 2
 #    endif
 
 // RGB info variables
 #    if defined RGB_MATRIX_ENABLE || defined RGBLIGHT_ENABLE
 char rgb_str[10];
 #        define RGB_INFO_DISPLAY_X 62
-#        define RGB_INFO_DISPLAY_Y 2
+#        define RGB_INFO_DISPLAY_Y 21
 #    endif
 
 // RGB light specific variables
@@ -89,6 +89,7 @@ bool    encoder_updating;
 uint8_t encoder_slider_pos[NUMBER_OF_ENCODERS];
 #    endif
 
+// gets the text of the last changed RGB setting
 void get_rgb_matrix_change(void) {
 #    ifdef RGBLIGHT_ENABLE
     if (bkl_mode != rgblight_config.mode) {
@@ -154,9 +155,6 @@ void draw_keyboard_layers(void) {
     write_char_at_pixel_xy(LAYER_DISPLAY_X + 3 + 12, LAYER_DISPLAY_Y + 2, '1', highest_layer == 1);
     write_char_at_pixel_xy(LAYER_DISPLAY_X + 3 + 24, LAYER_DISPLAY_Y + 2, '2', highest_layer == 2);
     write_char_at_pixel_xy(LAYER_DISPLAY_X + 3 + 36, LAYER_DISPLAY_Y + 2, '3', highest_layer == 3);
-
-    // draw dividing line
-    draw_line_h(0, 14, ENABLE_SLIDERS ? 110 : 128, true);
 }
 
 // draws the num, caps, and scroll lock indicators
@@ -195,6 +193,7 @@ void draw_encoder_slider(uint8_t enc_index) {
     uint8_t encoder_height = OLED_DISPLAY_HEIGHT - (2 * ENCODER_DISPLAY_Y);
     draw_rect_soft(enc_x, ENCODER_DISPLAY_Y, ENCODER_SLIDER_WIDTH, encoder_height, true);
     if (encoder_updating) {
+        // draw slider with offset if encoder is being updated
         uint8_t enc_offset = encoder_height * (encoder_slider_pos[enc_index] + 2) / 4;
         draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + enc_offset, ENCODER_SLIDER_WIDTH, encoder_height - enc_offset, true);
     } else {
@@ -203,11 +202,14 @@ void draw_encoder_slider(uint8_t enc_index) {
     }
 }
 
+// draws all encoder sliders
 void draw_encoder_sliders(void) {
-    draw_encoder_slider(0);
-    draw_encoder_slider(1);
+    for (int i = 0; i < NUMBER_OF_ENCODERS; i++) {
+        draw_encoder_slider(i);
+    }
 }
 
+// reset encoder slider positions
 void reset_encoders(void) {
     encoder_updating = false;
     for (int i = 0; i < NUMBER_OF_ENCODERS; i++) {
@@ -217,19 +219,26 @@ void reset_encoders(void) {
 #    endif
 
 bool oled_task_kb(void) {
+    // Animation loop
     if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
         anim_timer = timer_read32();
         oled_clear();
         draw_keyboard_layers();
+        // draw dividing line
+        draw_line_h(0, 14, ENABLE_SLIDERS ? 110 : 128, true);
         draw_keyboard_locks();
+
 #    if defined RGBLIGHT_ENABLE || defined RGB_MATRIX_ENABLE
         draw_rgb_matrix_change();
 #    endif
+
 #    ifdef WPM_ENABLE
         draw_wpm();
 #    endif
+
 #    if defined ENCODER_ENABLE && ENABLE_SLIDERS
         draw_encoder_sliders();
+        // reset encoder slider positions after delay
         if (timer_elapsed32(encoder_timer) > ENCODER_RESET_DELAY) {
             encoder_timer = timer_read32();
             reset_encoders();
