@@ -34,7 +34,7 @@ uint32_t anim_timer = 0;
 #    define SCROLLLOCK_DISPLAY_Y 0
 
 #    define LAYER_DISPLAY_X 0
-#    define LAYER_DISPLAY_Y 19
+#    define LAYER_DISPLAY_Y 20
 
 // WPM variables
 #    ifdef WPM_ENABLE
@@ -51,7 +51,7 @@ char wpm_str[10];
 #    if defined RGB_MATRIX_ENABLE || defined RGBLIGHT_ENABLE
 char rgb_str[10];
 #        define RGB_INFO_DISPLAY_X 62
-#        define RGB_INFO_DISPLAY_Y 21
+#        define RGB_INFO_DISPLAY_Y 22
 #    endif
 
 // RGB light specific variables
@@ -221,7 +221,7 @@ void draw_encoder_slider(uint8_t enc_index) {
         draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + enc_offset, ENCODER_SLIDER_WIDTH, encoder_height - enc_offset, true);
     } else {
         // default encoder state
-        draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + (encoder_height / 2) - 1, ENCODER_SLIDER_WIDTH, encoder_height / 2 + 1, true);
+        draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + (encoder_height / 2), ENCODER_SLIDER_WIDTH, encoder_height / 2, true);
     }
 }
 
@@ -248,7 +248,7 @@ bool oled_task_kb(void) {
         oled_clear();
         draw_keyboard_layers();
         // draw dividing line
-        draw_line_h(0, 14, ENABLE_SLIDERS ? 110 : 128, true);
+        draw_line_h(0, 15, ENABLE_SLIDERS ? 110 : 128, true);
         draw_keyboard_locks();
 
 #    if defined RGBLIGHT_ENABLE || defined RGB_MATRIX_ENABLE
