@@ -1,1 +1,1 @@
-SRC += keyboard0_oled.c \
+SRC += oled/keyboard0_oled.c \
