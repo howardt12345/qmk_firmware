@@ -41,6 +41,10 @@ uint32_t anim_timer = 0;
 char wpm_str[10];
 #        define WPM_DISPLAY_X 80
 #        define WPM_DISPLAY_Y 2
+#    else
+// Matrix display
+#        define MATRIX_DISPLAY_X 87
+#        define MATRIX_DISPLAY_Y 0
 #    endif
 
 // RGB info variables
@@ -185,6 +189,25 @@ void draw_wpm(void) {
 }
 #    endif
 
+// draws matrix display if WPM counter is disabled
+#    ifndef WPM_ENABLE
+void draw_matrix_display(void) {
+    // matrix
+    for (uint8_t x = 0; x < MATRIX_ROWS; x++) {
+        for (uint8_t y = 0; y < MATRIX_COLS; y++) {
+            bool on = (matrix_get_row(x) & (1 << y)) > 0;
+            oled_write_pixel(MATRIX_DISPLAY_X + y + 2, MATRIX_DISPLAY_Y + x + 2, on);
+        }
+    }
+
+    // outline
+    draw_line_h(MATRIX_DISPLAY_X + 1, MATRIX_DISPLAY_Y, MATRIX_COLS + 3, true);
+    draw_line_h(MATRIX_DISPLAY_X + 1, MATRIX_DISPLAY_Y + MATRIX_ROWS + 3, MATRIX_COLS + 3, true);
+    draw_line_v(MATRIX_DISPLAY_X, MATRIX_DISPLAY_Y + 1, MATRIX_ROWS + 2, true);
+    draw_line_v(MATRIX_DISPLAY_X + MATRIX_COLS + 4, MATRIX_DISPLAY_Y + 1, MATRIX_ROWS + 2, true);
+}
+#    endif
+
 // draws encoder sliders to indicate if encoder is being used
 #    if defined ENCODER_ENABLE && ENABLE_SLIDERS
 // Encoder slider component
@@ -198,7 +221,7 @@ void draw_encoder_slider(uint8_t enc_index) {
         draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + enc_offset, ENCODER_SLIDER_WIDTH, encoder_height - enc_offset, true);
     } else {
         // default encoder state
-        draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + (encoder_height / 2), ENCODER_SLIDER_WIDTH, encoder_height / 2, true);
+        draw_rect_filled_soft(enc_x, ENCODER_DISPLAY_Y + (encoder_height / 2) - 1, ENCODER_SLIDER_WIDTH, encoder_height / 2 + 1, true);
     }
 }
 
@@ -234,6 +257,8 @@ bool oled_task_kb(void) {
 
 #    ifdef WPM_ENABLE
         draw_wpm();
+#    else
+        draw_matrix_display();
 #    endif
 
 #    if defined ENCODER_ENABLE && ENABLE_SLIDERS
