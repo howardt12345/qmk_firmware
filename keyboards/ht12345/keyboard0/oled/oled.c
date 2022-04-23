@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Animation variables
 #    define ANIM_FRAME_DURATION 1000 / 15 // how long each frame lasts in ms
 uint32_t anim_timer = 0;
+# define TIMEOUT_DURATION 1000 * 30 // how long to wait before turning off oled
+uint32_t timeout_timer = 0;
 
 /* Placement information for display elements */
 #    define NUMLOCK_DISPLAY_X 0
@@ -241,9 +243,19 @@ void reset_encoders(void) {
 }
 #    endif
 
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    timeout_timer = timer_read32();
+    oled_on();
+
+    return process_record_user(keycode, record);
+}
+
 bool oled_task_kb(void) {
     // Animation loop
-    if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
+    if(timer_elapsed32(timeout_timer) > TIMEOUT_DURATION) {
+        oled_off();
+    } else {
+            if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
         anim_timer = timer_read32();
         oled_clear();
         draw_keyboard_layers();
@@ -269,6 +281,7 @@ bool oled_task_kb(void) {
             reset_encoders();
         }
 #    endif
+    }
     }
 
     return false;
