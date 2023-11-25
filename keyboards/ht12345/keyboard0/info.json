@@ -2,6 +2,13 @@
     "keyboard_name": "keyboard0",
     "url": "kb.ht12345.xyz/0",
     "maintainer": "ht12345",
+    "manufacturer": "ht12345",
+    "product": "keyboard0",
+    "usb": {
+        "vid": "0x1234",
+        "pid": "0x5678",
+        "device_version": "1.0.0"
+    },
     "layouts": {
         "LAYOUT": {
             "layout": [
