@@ -25,9 +25,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MK_3_SPEED
 
 /* RGBLIGHT config */
-#define RGB_DI_PIN A9
+
+#define WS2812_DI_PIN A9
 #define RGBLED_NUM 30
-#define RGBLIGHT_ANIMATIONS
+#define RGBLIGHT_EFFECT_ALTERNATING  // Add this line to define the macro
+#define RGBLIGHT_EFFECT_BREATHING
+#define RGBLIGHT_EFFECT_CHRISTMAS // Enable christmas animation mode.
+#define RGBLIGHT_EFFECT_KNIGHT // Enable knight animation mode.
+#define RGBLIGHT_EFFECT_RAINBOW_MOOD // Enable rainbow mood animation mode.
+#define RGBLIGHT_EFFECT_RAINBOW_SWIRL // Enable rainbow swirl animation mode.
+#define RGBLIGHT_EFFECT_RGB_TEST // Enable RGB test animation mode.
+#define RGBLIGHT_EFFECT_SNAKE // Enable snake animation mode.
+#define RGBLIGHT_EFFECT_STATIC_GRADIENT // Enable static gradient mode.
+#define RGBLIGHT_EFFECT_TWINKLE // Enable twinkle animation mode.
 #define RGBLIGHT_DEFAULT_VAL 64
 #define RGBLIGHT_DEFAULT_SPD 32
 #define RGBLIGHT_DEFAULT_MODE RGBLIGHT_MODE_RAINBOW_MOOD

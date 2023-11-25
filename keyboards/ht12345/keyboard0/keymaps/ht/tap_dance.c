@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include QMK_KEYBOARD_H
 
-void dance_rgb(qk_tap_dance_state_t *state, void *user_data) {
+void dance_rgb(tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
         case 1:
             rgb_matrix_toggle();
@@ -34,7 +34,7 @@ void dance_rgb(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void dance_media(qk_tap_dance_state_t *state, void *user_data) {
+void dance_media(tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
         case 1:
             tap_code16(KC_MPLY);
@@ -58,7 +58,7 @@ enum {
 };
 
 // Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
+tap_dance_action_t tap_dance_actions[] = {
     [TD_RGB] = ACTION_TAP_DANCE_FN(dance_rgb),
     [TD_MDA] = ACTION_TAP_DANCE_FN(dance_media),
 };
