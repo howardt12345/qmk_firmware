@@ -35,6 +35,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	{ K500,  K501,  K502,  K503,  KC_NO, KC_NO, K506,  KC_NO, KC_NO, KC_NO, K510,  K511,  KC_NO, K513,  K514,  K515,  K516,  K517 }  \
 }
 
+typedef union {
+    uint32_t raw;
+    struct {
+        uint8_t oled_mode;
+    };
+} user_config_t;
+
+user_config_t user_config;
+
+
 #ifdef OLED_ENABLE
 enum my_keycodes {
     OLED_PREV = SAFE_RANGE,

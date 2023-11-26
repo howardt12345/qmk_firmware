@@ -257,10 +257,7 @@ void draw_bongocat(void) {
             break;
         case idle:
             draw_bongocat_frame(4 - current_idle_frame);
-            if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
-                current_idle_frame = (current_idle_frame + 1) % 5;
-                anim_timer = timer_read32();
-            }
+            current_idle_frame = (current_idle_frame + 1) % 5;
             break;
         case prep:
             draw_bongocat_frame(5);

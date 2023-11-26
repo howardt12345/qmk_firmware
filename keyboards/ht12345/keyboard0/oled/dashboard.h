@@ -136,31 +136,12 @@ bool encoder_update_kb(uint8_t index, bool clockwise) {
 }
 #    endif
 
-// draws indicators for the current keyboard layer
-void draw_keyboard_layers(void) {
-    uint8_t highest_layer;
-    highest_layer = get_highest_layer(layer_state);
-    if (highest_layer < 4) {
-        draw_rect_filled_soft(LAYER_DISPLAY_X + highest_layer * 12, LAYER_DISPLAY_Y, 11, 11, true);
-    } else {
-        // indicator for layers above 3
-        draw_rect_filled_soft(LAYER_DISPLAY_X + 48, LAYER_DISPLAY_Y, 11, 11, true);
-        write_char_at_pixel_xy(LAYER_DISPLAY_X + 3 + 48, LAYER_DISPLAY_Y + 2, highest_layer + 0x30, highest_layer > 3);
-    }
-
-    // indicators for layers 0-3
-    write_char_at_pixel_xy(LAYER_DISPLAY_X + 3, LAYER_DISPLAY_Y + 2, '0', highest_layer == 0);
-    write_char_at_pixel_xy(LAYER_DISPLAY_X + 3 + 12, LAYER_DISPLAY_Y + 2, '1', highest_layer == 1);
-    write_char_at_pixel_xy(LAYER_DISPLAY_X + 3 + 24, LAYER_DISPLAY_Y + 2, '2', highest_layer == 2);
-    write_char_at_pixel_xy(LAYER_DISPLAY_X + 3 + 36, LAYER_DISPLAY_Y + 2, '3', highest_layer == 3);
-}
-
 // draws the num, caps, and scroll lock indicators
 void draw_keyboard_locks(void) {
     led_t led_state = host_keyboard_led_state();
-    draw_text_rectangle(NUMLOCK_DISPLAY_X, NUMLOCK_DISPLAY_Y, 5 + (3 * 6), "NUM", led_state.num_lock);
-    draw_text_rectangle(CAPSLOCK_DISPLAY_X, CAPSLOCK_DISPLAY_Y, 5 + (3 * 6), "CAP", led_state.caps_lock);
-    draw_text_rectangle(SCROLLLOCK_DISPLAY_X, SCROLLLOCK_DISPLAY_Y, 5 + (3 * 6), "SCR", led_state.scroll_lock);
+    draw_num_lock(NUMLOCK_DISPLAY_X, NUMLOCK_DISPLAY_Y, led_state);
+    draw_caps_lock(CAPSLOCK_DISPLAY_X, CAPSLOCK_DISPLAY_Y, led_state);
+    draw_scroll_lock(SCROLLLOCK_DISPLAY_X, SCROLLLOCK_DISPLAY_Y, led_state);
 }
 
 // draws the last changed RGB setting
@@ -240,36 +221,32 @@ void draw_dashboard(void) {
     if (timer_elapsed32(timeout_timer) > OLED_TIMEOUT) {
         oled_off();
     } else {
-        if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
-            anim_timer = timer_read32();
-            oled_clear();
-            draw_keyboard_layers();
+        draw_keyboard_layers(LAYER_DISPLAY_X, LAYER_DISPLAY_Y);
             // draw dividing line
 #    if defined ENCODER_ENABLE && ENABLE_SLIDERS
-            draw_line_h(0, 15, ENABLE_SLIDERS ? 110 : 128, true);
+        draw_line_h(0, 15, ENABLE_SLIDERS ? 110 : 128, true);
 #    else
-            draw_line_h(0, 15, 128, true);
+        draw_line_h(0, 15, 128, true);
 #   endif
-            draw_keyboard_locks();
+        draw_keyboard_locks();
 
 #    if defined RGBLIGHT_ENABLE || defined RGB_MATRIX_ENABLE
-            draw_rgb_matrix_change();
+        draw_rgb_matrix_change();
 #    endif
 
 #    ifdef WPM_ENABLE
-            draw_wpm();
+        draw_wpm();
 #    else
-            draw_matrix_display();
+        draw_matrix_display();
 #    endif
 
 #    if defined ENCODER_ENABLE && ENABLE_SLIDERS
-            draw_encoder_sliders();
-            // reset encoder slider positions after delay
-            if (timer_elapsed32(encoder_timer) > ENCODER_RESET_DELAY) {
-                encoder_timer = timer_read32();
-                reset_encoders();
-            }
-#    endif
+        draw_encoder_sliders();
+        // reset encoder slider positions after delay
+        if (timer_elapsed32(encoder_timer) > ENCODER_RESET_DELAY) {
+            encoder_timer = timer_read32();
+            reset_encoders();
         }
+#    endif
     }
 }

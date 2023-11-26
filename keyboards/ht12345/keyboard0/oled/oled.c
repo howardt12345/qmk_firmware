@@ -15,9 +15,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef OLED_ENABLE
+
 #include "oled.h"
 
-#ifdef OLED_ENABLE
+void update_kb_eeprom(void) {
+    eeconfig_update_kb(user_config.raw);
+}
 
 oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
     oled_redraw = true;
@@ -28,17 +32,25 @@ bool oled_task_kb(void) {
         oled_clear();
         oled_redraw = false;
     }
-    switch(oled_mode) {
-        case OLED_BONGO:
-            draw_bongo_table();
-            draw_bongocat();
-            break;
-        case OLED_LUNA:
-            render_luna(0, 0);
-            break;
-        default:
-            draw_dashboard();
-            break;
+
+    if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
+        anim_timer = timer_read32();
+        oled_clear();
+        switch(user_config.oled_mode) {
+            case OLED_BONGO:
+                draw_bongo_table();
+                draw_bongocat();
+                break;
+            case OLED_LUNA:
+                draw_luna_ui();
+                render_luna(0, 0);
+                break;
+            default:
+                draw_dashboard();
+                break;
+        }
+    } else if (timer_elapsed32(timeout_timer) > OLED_TIMEOUT) {
+        oled_off();
     }
 
     return false;
@@ -50,20 +62,28 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {\
 
     switch (keycode) {
         case OLED_PREV:
-            oled_redraw = true;
             if (record->event.pressed) {
-                oled_mode = (oled_mode - 1) % _NUM_OLED_MODES;
+                user_config.oled_mode = (user_config.oled_mode - 1) % _NUM_OLED_MODES;
+                update_kb_eeprom();
             }
+            oled_redraw = true;
             break;
         case OLED_NEXT:
-            oled_redraw = true;
             if (record->event.pressed) {
-                oled_mode = (oled_mode + 1) % _NUM_OLED_MODES;
+                user_config.oled_mode = (user_config.oled_mode + 1) % _NUM_OLED_MODES;
+                update_kb_eeprom();
             }
+            oled_redraw = true;
             break;
     }
 
     return process_record_user(keycode, record);
+}
+
+void keyboard_post_init_kb(void) {
+    user_config.raw = eeconfig_read_kb();
+
+    keyboard_post_init_user();
 }
 
 #endif
