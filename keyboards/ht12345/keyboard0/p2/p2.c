@@ -165,8 +165,3 @@ bool rgb_matrix_indicators_kb(void) {
     return true;
 }
 #endif
-#ifdef OLED_ENABLE
-oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
-    return OLED_ROTATION_180;  // flips the display 180 degrees
-};
-#endif

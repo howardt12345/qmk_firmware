@@ -1,9 +1,10 @@
+/**
+ * @brief Using the bongo cat implementation from the EVO70 keyboard
+ *
+ */
 
-
-#define ANIM_FRAME_DURATION 75
 #define IDLE_FRAMES 5
 #define IDLE_TIMEOUT 750
-#define SLEEP_TIMEOUT 15000
 
 extern matrix_row_t matrix[MATRIX_ROWS];
 
@@ -121,7 +122,6 @@ const uint8_t bongo_line_data[8][26] PROGMEM = {
 enum anin_states { sleep, idle, prep, tap };
 uint8_t anim_state = idle;
 uint32_t idle_timeout_timer = 0;
-uint32_t anim_timer = 0;
 uint8_t current_idle_frame = 0;
 uint8_t current_tap_frame = 6;
 uint8_t last_bongo_frame = 12;
@@ -160,7 +160,7 @@ void eval_anim_state(void) {
             break;
         case idle:
             if(key_down) { anim_state = tap; }
-            else if (timer_elapsed32(idle_timeout_timer) >= SLEEP_TIMEOUT) //prep to idle
+            else if (timer_elapsed32(idle_timeout_timer) >= OLED_TIMEOUT) //prep to idle
                 {
                     anim_state = sleep;
                     current_idle_frame = 0;

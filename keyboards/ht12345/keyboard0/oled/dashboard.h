@@ -15,12 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Animation variables
-#    define ANIM_FRAME_DURATION 1000 / 15 // how long each frame lasts in ms
-uint32_t dashboard_anim_timer = 0;
-#    define TIMEOUT_DURATION 1000 * 30 // how long to wait before turning off oled
-uint32_t timeout_timer = 0;
-
 /* Placement information for display elements */
 #    define NUMLOCK_DISPLAY_X 0
 #    define NUMLOCK_DISPLAY_Y 0
@@ -241,20 +235,13 @@ void reset_encoders(void) {
 }
 #    endif
 
-bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    timeout_timer = timer_read32();
-    oled_on();
-
-    return process_record_user(keycode, record);
-}
-
 void draw_dashboard(void) {
     // Animation loop
-    if (timer_elapsed32(timeout_timer) > TIMEOUT_DURATION) {
+    if (timer_elapsed32(timeout_timer) > OLED_TIMEOUT) {
         oled_off();
     } else {
-        if (timer_elapsed32(dashboard_anim_timer) > ANIM_FRAME_DURATION) {
-            dashboard_anim_timer = timer_read32();
+        if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
+            anim_timer = timer_read32();
             oled_clear();
             draw_keyboard_layers();
             // draw dividing line
