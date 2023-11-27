@@ -33,24 +33,26 @@ bool oled_task_kb(void) {
         oled_redraw = false;
     }
 
-    if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
+    if (timer_elapsed32(timeout_timer) > OLED_TIMEOUT) {
+        oled_off();
+    } else if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
+        // Animation loop
         anim_timer = timer_read32();
-        oled_clear();
         switch(user_config.oled_mode) {
             case OLED_BONGO:
                 draw_bongo_table();
                 draw_bongocat();
                 break;
             case OLED_LUNA:
+                oled_clear();
                 draw_luna_ui();
                 render_luna(0, 0);
                 break;
             default:
+                oled_clear();
                 draw_dashboard();
                 break;
         }
-    } else if (timer_elapsed32(timeout_timer) > OLED_TIMEOUT) {
-        oled_off();
     }
 
     return false;

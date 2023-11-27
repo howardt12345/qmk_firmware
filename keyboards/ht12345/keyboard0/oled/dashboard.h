@@ -217,38 +217,33 @@ void reset_encoders(void) {
 #    endif
 
 void draw_dashboard(void) {
-    // Animation loop
-    if (timer_elapsed32(timeout_timer) > OLED_TIMEOUT) {
-        oled_off();
-    } else {
-        // draw keyboard layers
-        draw_keyboard_layers(LAYER_DISPLAY_X, LAYER_DISPLAY_Y, 4);
-        // draw dividing line
-        #if defined ENCODER_ENABLE && ENABLE_SLIDERS
-            draw_line_h(0, 15, ENABLE_SLIDERS ? 110 : 128, true);
-        #else
-            draw_line_h(0, 15, 128, true);
-        #endif
-        // draw keyboard locks
-        draw_keyboard_locks();
+    // draw keyboard layers
+    draw_keyboard_layers(LAYER_DISPLAY_X, LAYER_DISPLAY_Y, 4);
+    // draw dividing line
+    #if defined ENCODER_ENABLE && ENABLE_SLIDERS
+        draw_line_h(0, 15, ENABLE_SLIDERS ? 110 : 128, true);
+    #else
+        draw_line_h(0, 15, 128, true);
+    #endif
+    // draw keyboard locks
+    draw_keyboard_locks();
 
-        #if defined RGBLIGHT_ENABLE || defined RGB_MATRIX_ENABLE
-            draw_rgb_matrix_change();
-        #endif
+    #if defined RGBLIGHT_ENABLE || defined RGB_MATRIX_ENABLE
+        draw_rgb_matrix_change();
+    #endif
 
-        #ifdef WPM_ENABLE
-            draw_wpm();
-        #else
-            draw_matrix_display();
-        #endif
+    #ifdef WPM_ENABLE
+        draw_wpm();
+    #else
+        draw_matrix_display();
+    #endif
 
-        #if defined ENCODER_ENABLE && ENABLE_SLIDERS
-            draw_encoder_sliders();
-            // reset encoder slider positions after delay
-            if (timer_elapsed32(encoder_timer) > ENCODER_RESET_DELAY) {
-                encoder_timer = timer_read32();
-                reset_encoders();
-            }
-        #endif
-    }
+    #if defined ENCODER_ENABLE && ENABLE_SLIDERS
+        draw_encoder_sliders();
+        // reset encoder slider positions after delay
+        if (timer_elapsed32(encoder_timer) > ENCODER_RESET_DELAY) {
+            encoder_timer = timer_read32();
+            reset_encoders();
+        }
+    #endif
 }
