@@ -48,6 +48,8 @@ user_config_t user_config;
 #ifdef OLED_ENABLE
 enum custom_keycodes {
     OLED_PREV = QK_KB_0,
-    OLED_NEXT
+    OLED_NEXT,
+    LAYER_PREV,
+    LAYER_NEXT
 };
 #endif

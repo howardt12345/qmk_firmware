@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifdef OLED_ENABLE
 
 #include "oled.h"
+#include "common.h"
 
 void update_kb_eeprom(void) {
     eeconfig_update_kb(user_config.raw);
@@ -42,6 +43,7 @@ bool oled_task_kb(void) {
             case OLED_BONGO:
                 draw_bongo_table();
                 draw_bongocat();
+                draw_bongocat_ui();
                 break;
             case OLED_LUNA:
                 oled_clear();
@@ -57,25 +59,40 @@ bool oled_task_kb(void) {
 
     return false;
 }
+#endif
 
-bool process_record_kb(uint16_t keycode, keyrecord_t *record) {\
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    #ifdef OLED_ENABLE
     timeout_timer = timer_read32();
     oled_on();
+    #endif
 
     switch (keycode) {
+        #ifdef OLED_ENABLE
         case OLED_PREV:
             if (record->event.pressed) {
-                user_config.oled_mode = (user_config.oled_mode - 1) % _NUM_OLED_MODES;
+                user_config.oled_mode = (user_config.oled_mode - 1) % (_NUM_OLED_MODES);
                 update_kb_eeprom();
             }
             oled_redraw = true;
             break;
         case OLED_NEXT:
             if (record->event.pressed) {
-                user_config.oled_mode = (user_config.oled_mode + 1) % _NUM_OLED_MODES;
+                user_config.oled_mode = (user_config.oled_mode + 1) % (_NUM_OLED_MODES);
                 update_kb_eeprom();
             }
             oled_redraw = true;
+            break;
+        #endif
+        case LAYER_PREV:
+            if (record->event.pressed) {
+                previous_layer();
+            }
+            break;
+        case LAYER_NEXT:
+            if (record->event.pressed) {
+                next_layer();
+            }
             break;
     }
 
@@ -87,5 +104,3 @@ void keyboard_post_init_kb(void) {
 
     keyboard_post_init_user();
 }
-
-#endif

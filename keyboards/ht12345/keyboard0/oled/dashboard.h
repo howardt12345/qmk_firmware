@@ -30,7 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // WPM variables
 #    ifdef WPM_ENABLE
-char wpm_str[10];
 #        define WPM_DISPLAY_X 80
 #        define WPM_DISPLAY_Y 2
 #    else
@@ -156,33 +155,6 @@ void draw_rgb_matrix_change(void) {
 }
 #    endif
 
-// draws WPM info
-#    ifdef WPM_ENABLE
-void draw_wpm(void) {
-    sprintf(wpm_str, ENABLE_SLIDERS ? "W:%03d" : "WPM:%03d", get_current_wpm());
-    write_chars_at_pixel_xy(WPM_DISPLAY_X + (ENABLE_SLIDERS ? 0 : 6), WPM_DISPLAY_Y, wpm_str, false);
-}
-#    endif
-
-// draws matrix display if WPM counter is disabled
-#    ifndef WPM_ENABLE
-void draw_matrix_display(void) {
-    // matrix
-    for (uint8_t x = 0; x < MATRIX_ROWS; x++) {
-        for (uint8_t y = 0; y < MATRIX_COLS; y++) {
-            bool on = (matrix_get_row(x) & (1 << y)) > 0;
-            oled_write_pixel(MATRIX_DISPLAY_X + y + 2, MATRIX_DISPLAY_Y + x + 2, on);
-        }
-    }
-
-    // outline
-    draw_line_h(MATRIX_DISPLAY_X + 1, MATRIX_DISPLAY_Y, MATRIX_COLS + 3, true);
-    draw_line_h(MATRIX_DISPLAY_X + 1, MATRIX_DISPLAY_Y + MATRIX_ROWS + 3, MATRIX_COLS + 3, true);
-    draw_line_v(MATRIX_DISPLAY_X, MATRIX_DISPLAY_Y + 1, MATRIX_ROWS + 2, true);
-    draw_line_v(MATRIX_DISPLAY_X + MATRIX_COLS + 4, MATRIX_DISPLAY_Y + 1, MATRIX_ROWS + 2, true);
-}
-#    endif
-
 // draws encoder sliders to indicate if encoder is being used
 #    if defined ENCODER_ENABLE && ENABLE_SLIDERS
 // Encoder slider component
@@ -233,9 +205,9 @@ void draw_dashboard(void) {
     #endif
 
     #ifdef WPM_ENABLE
-        draw_wpm();
+        draw_wpm(WPM_DISPLAY_X, WPM_DISPLAY_Y, ENABLE_SLIDERS);
     #else
-        draw_matrix_display();
+        draw_matrix_display(MATRIX_DISPLAY_X, MATRIX_DISPLAY_Y);
     #endif
 
     #if defined ENCODER_ENABLE && ENABLE_SLIDERS

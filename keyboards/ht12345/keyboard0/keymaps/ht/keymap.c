@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 #include "tap_dance.c"
+#include "common.h"
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // clang-format off
@@ -79,19 +80,12 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
             } else {
                 rgb_matrix_decrease_speed();
             }
-        } else if (IS_LAYER_ON(1)) { /* If menu is held down */
-            // change RGB matrix mode
-            if (clockwise) {
-                rgb_matrix_step();
-            } else {
-                rgb_matrix_step_reverse();
-            }
         } else {
             // change RGB matrix brightness
             if (clockwise) {
-                rgb_matrix_increase_val();
+                next_layer();
             } else {
-                rgb_matrix_decrease_val();
+                previous_layer();
             }
         }
     } else if (index == 1) {  /* Second encoder, ROT2 */
@@ -110,7 +104,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
                 rgblight_step_reverse();
             }
         } else if (is_alt) { /* If alt is held down */
-            // alt tab functionality
+            // change RGB light strip saturation
             if (clockwise) {
                 rgblight_increase_sat();
             } else {

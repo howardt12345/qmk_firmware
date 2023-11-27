@@ -3,7 +3,6 @@
  *
  */
 
-#define IDLE_FRAMES 5
 #define IDLE_TIMEOUT 750
 
 extern matrix_row_t matrix[MATRIX_ROWS];
@@ -281,4 +280,8 @@ void draw_bongocat(void) {
             break;
 
     }
+}
+
+void draw_bongocat_ui(void) {
+    draw_matrix_display(100, 20);
 }
