@@ -1,3 +1,24 @@
+/* Copyright 2023 Howard Tseng
+ * QMK Keyboard pet originally by HellSingCoder, adapted for horizontal display by Sebastian Müller
+ * Further modified to include UI by Howard Tseng
+ *
+ * https://github.com/HellSingCoder/qmk_firmware/blob/master/keyboards/sofle/keymaps/helltm/keymap.c
+ * https://github.com/sbmueller/qmk_firmware/blob/29bf5001636375d792f784fd9d242d49fff8ce21/keyboards/splitkb/kyria/keymaps/sbmueller/keymap.c
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /* KEYBOARD PET START */
 
 /* settings */
@@ -130,11 +151,11 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
 
 void draw_luna_ui(void) {
     led_t led_state = host_keyboard_led_state();
-    draw_num_lock(50, 0, led_state);
-    draw_caps_lock(76, 0, led_state);
-    draw_scroll_lock(102, 0, led_state);
-    draw_line_h(50, 15, 128, true);
-    draw_keyboard_layers(76, 20);
+    draw_num_lock(53, 0, led_state);
+    draw_caps_lock(79, 0, led_state);
+    draw_scroll_lock(105, 0, led_state);
+    draw_line_h(53, 15, 128, true);
+    draw_keyboard_layers(56, 20, 6);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {

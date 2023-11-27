@@ -61,6 +61,9 @@
     "mouse_key": {
         "enabled": true
     },
+    "dynamic_keymap": {
+        "layer_count": 4
+    },
     "rgb_matrix": {
         "driver": "is31fl3731",
         "layout": [

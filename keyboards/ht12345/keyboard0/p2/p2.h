@@ -46,8 +46,8 @@ user_config_t user_config;
 
 
 #ifdef OLED_ENABLE
-enum my_keycodes {
-    OLED_PREV = SAFE_RANGE,
+enum custom_keycodes {
+    OLED_PREV = QK_KB_0,
     OLED_NEXT
 };
 #endif
